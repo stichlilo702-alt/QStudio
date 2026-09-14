@@ -60,6 +60,9 @@ importers:
       eslint-config-prettier:
         specifier: ^10.0.1
         version: 10.1.8(eslint@9.39.5(jiti@1.21.7))
+      globals:
+        specifier: ^16.0.0
+        version: 16.5.0
       postcss:
         specifier: ^8.5.2
         version: 8.5.22
@@ -1203,6 +1206,10 @@ packages:
 
   globals@14.0.0:
     resolution: {integrity: sha512-oahGvuMGQlPw/ivIYBjVSrWAfWLBeku5tpPE2fOPLi+WHffIWbuh2tCjhyQhTBPMf5E9jDEH4FOmTYgYwbKwtQ==}
+    engines: {node: '>=18'}
+
+  globals@16.5.0:
+    resolution: {integrity: sha512-c/c15i26VrJ4IRt5Z89DnIzCGDn9EcebibhAOjw5ibqEHsE1wLUgkPn9RDmNcUKyU87GeaL633nyJ+pplFR2ZQ==}
     engines: {node: '>=18'}
 
   globalthis@1.0.4:
@@ -3126,6 +3133,8 @@ snapshots:
     optional: true
 
   globals@14.0.0: {}
+
+  globals@16.5.0: {}
 
   globalthis@1.0.4:
     dependencies:
