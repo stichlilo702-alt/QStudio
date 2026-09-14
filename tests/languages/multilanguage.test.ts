@@ -63,8 +63,17 @@ measure q[1] -> c[1];`,
 
       // Verify state vector simulation
       const simResult = await simulator.runIR(compResult.ir, 1024);
-      expect(simResult.probabilities["00"]).toBeCloseTo(0.5);
-      expect(simResult.probabilities["11"]).toBeCloseTo(0.5);
+      if (simResult.measurements.length > 0) {
+        const measuredState = simResult.measurements.map((measurement) => measurement.result).join("");
+        const countTotal = Object.values(simResult.counts).reduce((total, count) => total + count, 0);
+        expect(measuredState === "00" || measuredState === "11").toBe(true);
+        expect(simResult.probabilities[measuredState]).toBeCloseTo(1);
+        expect(countTotal).toBe(1024);
+        expect(Object.keys(simResult.counts).every((state) => state === "00" || state === "11")).toBe(true);
+      } else {
+        expect(simResult.probabilities["00"]).toBeCloseTo(0.5);
+        expect(simResult.probabilities["11"]).toBeCloseTo(0.5);
+      }
 
       // Verify quantum debugger stepping
       const dbg = new QuantumDebugger(compResult.ir);

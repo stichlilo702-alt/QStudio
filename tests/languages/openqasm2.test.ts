@@ -66,8 +66,10 @@ measure q[0] -> c[0];
 measure q[1] -> c[1];
 `;
     const result = await simulator.run(source, 1024, "openqasm2");
-    expect(result.probabilities["00"]).toBeCloseTo(0.5);
-    expect(result.probabilities["11"]).toBeCloseTo(0.5);
+    const measuredState = result.measurements.map((measurement) => measurement.result).join("");
+    expect(measuredState === "00" || measuredState === "11").toBe(true);
+    expect(result.probabilities[measuredState]).toBeCloseTo(1);
+    expect(Object.values(result.counts).reduce((total, count) => total + count, 0)).toBe(1024);
   });
 
   it("emits diagnostic for unknown register", async () => {

@@ -9,6 +9,11 @@ export interface SimulationResult {
   elapsedMs: number;
 }
 
+export interface MeasurementResult {
+  qubit: number;
+  result: 0 | 1;
+}
+
 export interface QuantumSimulator {
   compile(source: string, languageId?: string): Promise<QuantumIR>;
   run(source: string, shots?: number, languageId?: string): Promise<SimulationResult>;
@@ -19,6 +24,7 @@ export interface QuantumSimulator {
 export interface StateVectorResult extends SimulationResult {
   probabilities: Record<string, number>;
   registers: Array<{ qubit: number; zero: number; one: number; bloch: { x: number; y: number; z: number } }>;
+  measurements: MeasurementResult[];
 }
 
 type Complex = readonly [number, number];
@@ -28,6 +34,7 @@ export class StateVectorSimulator implements QuantumSimulator {
   private real = new Float64Array();
   private imaginary = new Float64Array();
   private qubits = 0;
+  private measurements: MeasurementResult[] = [];
 
   constructor(
     private readonly compiler = new SilqCompiler(),
@@ -61,31 +68,26 @@ export class StateVectorSimulator implements QuantumSimulator {
     }
     this.cancelled = false;
     const started = performance.now();
-    this.initialize(ir.qubits);
-
-    for (const operation of ir.operations) {
-      if (this.cancelled) throw new Error("Simulation stopped.");
-      this.apply(operation);
-    }
-
-    const probabilities = this.probabilities();
-    const counts = this.sample(probabilities, shots);
+    const inspection = this.execute(ir);
+    const stateVector = this.stateVector();
+    const registers = this.registers();
+    const counts = ir.operations.some((operation) => operation.opcode === "measure")
+      ? this.sampleShots(ir, shots)
+      : this.sample(inspection.probabilities, shots);
     return {
       shots,
       counts,
-      probabilities,
-      stateVector: this.stateVector(),
-      registers: this.registers(),
+      probabilities: inspection.probabilities,
+      stateVector,
+      registers,
+      measurements: inspection.measurements,
       elapsedMs: Math.round(performance.now() - started),
     };
   }
 
   async measure(qubit: number): Promise<0 | 1> {
     if (qubit < 0 || qubit >= this.qubits) throw new Error("Qubit is outside the active register.");
-    const one = this.probabilityOne(qubit);
-    const result: 0 | 1 = Math.random() < one ? 1 : 0;
-    this.collapse(qubit, result);
-    return result;
+    return this.measureQubit(qubit);
   }
 
   async stop(): Promise<void> {
@@ -94,6 +96,7 @@ export class StateVectorSimulator implements QuantumSimulator {
 
   private initialize(qubits: number): void {
     this.qubits = qubits;
+    this.measurements = [];
     const size = 1 << qubits;
     this.real = new Float64Array(size);
     this.imaginary = new Float64Array(size);
@@ -134,8 +137,30 @@ export class StateVectorSimulator implements QuantumSimulator {
         this.reset(a);
         break;
       case "measure":
+        for (const target of operation.targets) this.measureQubit(target);
         break;
     }
+  }
+
+  private execute(ir: QuantumIR): { probabilities: Record<string, number>; measurements: MeasurementResult[] } {
+    this.initialize(ir.qubits);
+    for (const operation of ir.operations) {
+      if (this.cancelled) throw new Error("Simulation stopped.");
+      this.apply(operation);
+    }
+    return { probabilities: this.probabilities(), measurements: [...this.measurements] };
+  }
+
+  private sampleShots(ir: QuantumIR, shots: number): Record<string, number> {
+    const counts: Record<string, number> = {};
+    for (let shot = 0; shot < shots; shot++) {
+      if (this.cancelled) throw new Error("Simulation stopped.");
+      const execution = this.execute(ir);
+      const sampledState = this.sample(execution.probabilities, 1);
+      const state = Object.keys(sampledState)[0];
+      if (state) counts[state] = (counts[state] ?? 0) + 1;
+    }
+    return counts;
   }
 
   private single(target: number, m00: Complex, m01: Complex, m10: Complex, m11: Complex): void {
@@ -225,6 +250,15 @@ export class StateVectorSimulator implements QuantumSimulator {
         this.imaginary[i] *= scale;
       }
     }
+  }
+
+  private measureQubit(qubit: number): 0 | 1 {
+    this.assertQubit(qubit);
+    const one = this.probabilityOne(qubit);
+    const result: 0 | 1 = Math.random() < one ? 1 : 0;
+    this.collapse(qubit, result);
+    this.measurements.push({ qubit, result });
+    return result;
   }
 
   private probabilities(): Record<string, number> {

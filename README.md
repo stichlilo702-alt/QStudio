@@ -157,7 +157,7 @@ pnpm build
 
 ### Simulator scope
 
-The simulator is intended for small circuits and supports 1–12 qubits. It is a local state-vector simulator, not a hardware backend and not a performance-oriented large-scale simulator. The current IR execution path treats measurement operations as non-mutating during a run; measurement-collapse semantics need further work before the simulator should be treated as a complete measurement model.
+The simulator is intended for small circuits and supports 1–12 qubits. It is a local state-vector simulator, not a hardware backend and not a performance-oriented large-scale simulator. Measurement operations now perform projective collapse and record per-run outcomes, while repeated shots are executed independently for aggregate counts. Classical-register destinations and richer classical control semantics are not yet represented in the shared IR.
 
 The quantum debugger replays prefixes of the compiled IR and does not connect to real quantum hardware.
 

@@ -70,8 +70,10 @@ describe("Microsoft Q# Adapter & Parser", () => {
 }
 `;
     const result = await simulator.run(source, 1024, "qsharp");
-    expect(result.probabilities["00"]).toBeCloseTo(0.5);
-    expect(result.probabilities["11"]).toBeCloseTo(0.5);
+    const measuredState = result.measurements.map((measurement) => measurement.result).join("");
+    expect(measuredState === "00" || measuredState === "11").toBe(true);
+    expect(result.probabilities[measuredState]).toBeCloseTo(1);
+    expect(Object.values(result.counts).reduce((total, count) => total + count, 0)).toBe(1024);
   });
 
   it("emits diagnostic for unknown qubit register", async () => {
