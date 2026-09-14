@@ -2,7 +2,7 @@
 
 ## 1. Architectural Audit
 
-QStudio is a quantum development environment architected with a modular, unidirectional compilation and simulation pipeline. Prior to multi-language extension, the system was tightly coupled to a single Silq-inspired language compiler.
+QStudio is a quantum development environment architected with a modular, unidirectional compilation and simulation pipeline. Its primary language is a Silq-inspired QStudio language; additional adapters lower documented subsets of OpenQASM 3, OpenQASM 2, Microsoft Q#, and Quil into the same local tooling pipeline.
 
 ### Current Pipeline Overview
 1. **Source Code**: User enters quantum source code in the Monaco Editor.
@@ -75,7 +75,7 @@ To support OpenQASM 3, Microsoft Q#, Quil, and OpenQASM 2.0 without rewriting th
 
 | Language | Extensions | Monaco ID | Header / Declarations | Supported Gate Set & Operations |
 | :--- | :--- | :--- | :--- | :--- |
-| **Silq** (Original) | `.silq` | `silq` | `fn main() { let q = new Qubit[n]; }` | `H`, `X`, `Y`, `Z`, `S`, `T`, `CNOT`, `CZ`, `SWAP`, `measure`, `reset`, `.controlled(q)` |
+| **Silq-inspired QStudio language** | `.silq` | `silq` | `fn main() { let q = new Qubit[n]; }` | `H`, `X`, `Y`, `Z`, `S`, `T`, `CNOT`, `CZ`, `SWAP`, `measure`, `reset`, `.controlled(q)` |
 | **OpenQASM 3** | `.qasm`, `.qasm3` | `openqasm3` | `OPENQASM 3.0;`, `qubit[n] q;`, `bit[n] c;` | `h`, `x`, `y`, `z`, `s`, `t`, `cx`, `cnot`, `cz`, `swap`, `measure`, `reset` |
 | **Microsoft Q#** | `.qs` | `qsharp` | `namespace N { operation O() : R { use q = Qubit[n]; } }` | `H`, `X`, `Y`, `Z`, `S`, `T`, `CNOT`, `CZ`, `SWAP`, `M`, `Reset`, `ResetAll`, `let r = M(q)` |
 | **Quil** | `.quil` | `quil` | `DECLARE ro BIT[n]` | `H`, `X`, `Y`, `Z`, `S`, `T`, `CNOT`, `CZ`, `SWAP`, `MEASURE`, `RESET` |
@@ -94,5 +94,7 @@ To add another quantum language in the future:
    - Provide `id`, `name`, `extensions`, `monacoLanguageId`, `capabilities`, `examplePrograms`.
    - Implement `compile(source)` and `diagnostics(source)`.
 3. Register the adapter in `backend/src/languages/index.ts` with `defaultLanguageRegistry.register(new MyLanguageAdapter())`.
-4. Register syntax highlighting and language definition in `renderer/src/language/MonacoLanguageService.ts`.
+4. Register syntax highlighting and language definition in `renderer/src/language/QuantumMonacoService.ts`.
 5. Add unit tests for syntax parsing, diagnostics, and state-vector simulation.
+
+All adapters implement documented subsets only; QStudio is not an official implementation of Silq, OpenQASM, Q#, or Quil. The shared IR supports linear quantum operations but does not yet model classical-register destinations or classical control flow.

@@ -2,7 +2,7 @@
 
 ## Shared State-Vector Simulator
 
-`StateVectorSimulator` performs exact state-vector quantum simulation for 1 through 12 qubits using a normalized complex float amplitude array ($2^N$ complex numbers).
+`StateVectorSimulator` performs exact small-circuit state-vector simulation for 1 through 12 qubits using normalized `Float64Array` real and imaginary amplitude arrays ($2^N$ complex numbers).
 
 Because all language adapters (Silq, OpenQASM 3, Q#, Quil, OpenQASM 2.0) compile into the unified `QuantumIR`, a single high-performance simulation engine is shared across all languages.
 
@@ -14,8 +14,10 @@ Because all language adapters (Silq, OpenQASM 3, Q#, Quil, OpenQASM 2.0) compile
 ### Simulation Outputs
 - **Probability Distribution**: Exact state probabilities calculated from complex amplitude norms $|a_i|^2 + |b_i|^2$.
 - **State Vector**: Formatted complex amplitude representation per basis state (e.g. `0.707 + 0.000i |00⟩`).
-- **Measurement Sampling**: Monte Carlo sampling according to probability distribution across user-selected shots (100, 512, 1024, 2048, 4096).
+- **Measurement Sampling**: Projective measurement samples an outcome, collapses and renormalizes the state, and records the measured qubit/result for the inspection run. User-selected shots (100, 512, 1024, 2048, 4096) execute independently and aggregate final computational-state counts.
 - **Bloch Coordinates**: Per-qubit Bloch vector expectation values $(x, y, z)$.
+
+Measurement and reset are local state-vector operations: measurement uses the computational basis and reset projects a qubit to $|0\rangle$. The returned inspection state is separate from repeated-shot statistics. The simulator has no physical hardware backend, and the shared IR does not yet represent classical-register destinations or classical control flow.
 
 ### Multi-Language Invocation
 ```ts

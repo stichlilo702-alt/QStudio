@@ -1,5 +1,5 @@
 import type * as Monaco from "monaco-editor";
-import { defaultLanguageRegistry, type QuantumLanguageAdapter } from "../../../backend/src/languages";
+import type { QuantumLanguageAdapter } from "../../../backend/src/languages";
 import { registerSilqLanguage, updateSilqDiagnostics } from "./SilqLanguageService";
 
 let allLanguagesRegistered = false;

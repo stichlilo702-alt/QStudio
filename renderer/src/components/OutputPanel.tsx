@@ -23,7 +23,6 @@ export function OutputPanel(): JSX.Element {
     setSelectedDiagnostic,
     tabs,
     activeTab,
-    log,
   } = useIDEStore();
 
   const tab = tabs.find((item) => item.id === activeTab);

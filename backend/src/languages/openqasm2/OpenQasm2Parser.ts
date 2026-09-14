@@ -340,7 +340,7 @@ export class OpenQasm2Parser {
         this.consumeUntil(tokens, ";");
         const nodeRange = this.range(start, this.previous(tokens));
 
-        let opcode = GATE_OPCODES[gateLower]!;
+        const opcode = GATE_OPCODES[gateLower]!;
         let targets: QubitRef[] = [];
         let controls: QubitRef[] = [];
 

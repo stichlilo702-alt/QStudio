@@ -9,7 +9,7 @@ QStudio provides a modular compiler architecture supporting 5 quantum languages:
 
 ## 1. Supported Quantum Languages
 
-### A. Silq (Original QStudio Language)
+### A. Silq-inspired QStudio language
 - **Extensions**: `.silq`
 - **Supported Subset**:
   - Function declarations: `fn name() { ... }`
@@ -75,8 +75,10 @@ QStudio provides a modular compiler architecture supporting 5 quantum languages:
 
 Every language adapter produces a unified `CompilationResult`:
 1. **Lexer / Tokenizer**: Creates tokens with accurate 1-indexed lines and columns.
-2. **Parser**: Generates typed AST (`ProgramNode`).
-3. **Semantic Analyzer**: Validates register sizes, total qubit allocations (1–12 qubits for local state-vector simulation), and index bounds.
+2. **Parser**: Generates a typed AST (`ProgramNode`).
+3. **Semantic Analyzer**: Validates register sizes, simulator-compatible qubit limits (1–12 qubits), symbol references, and index bounds.
 4. **IR Lowering**: Generates `QuantumIR` containing linear `IROperation` entries with targets, controls, and source code ranges.
 5. **Circuit Model**: Emits SVG-renderable `CircuitModel`.
 6. **Diagnostics**: Returns structured `Diagnostic` items for pinpoint error reporting in Monaco.
+
+The shared IR is intentionally small. It represents linear quantum operations, targets, controls, and source ranges, but does not yet preserve classical-register destinations or support classical control flow. Measurement operations collapse the simulated state and record per-run outcomes; repeated shot counts are generated from independent simulator runs.

@@ -31,17 +31,15 @@ export function AstExplorer(): JSX.Element {
   return (
     <section className="ast">
       <div className="subheading">AST EXPLORER</div>
-      {ast ? <AstNode label="ProgramNode" node={ast} select={selectAst} /> : <p className="muted">Parsing AST...</p>}
+      {ast ? <AstNode node={ast} select={selectAst} /> : <p className="muted">Parsing AST...</p>}
     </section>
   );
 }
 
 function AstNode({
-  label,
   node,
   select,
 }: {
-  label: string;
   node: ProgramNode | StatementNode;
   select(range: { start: number; end: number }): void;
 }): JSX.Element {
@@ -79,7 +77,6 @@ function AstNode({
           {children.map((child: StatementNode, index: number) => (
             <AstNode
               key={`${child.range.start}-${index}`}
-              label={child.kind}
               node={child}
               select={select}
             />

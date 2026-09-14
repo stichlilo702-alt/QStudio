@@ -1,8 +1,8 @@
 # Architecture
 
-Silq Studio uses a process boundary: Electron's main process owns filesystem dialogs and I/O; the renderer receives only a narrow, context-isolated preload API. React feature modules communicate through a Zustand store rather than Electron APIs directly.
+QStudio is an Electron desktop application with a React renderer and TypeScript compiler and simulation modules. The main process owns filesystem dialogs, workspace file I/O, terminal execution, and optional AI provider calls. The renderer receives those capabilities through a narrow, context-isolated preload API and uses a Zustand store for UI state.
 
-The `backend`, `simulator`, `ai`, and `extensions` folders expose contracts, not vendor-specific integrations. Production adapters can be selected by composition at startup. This enables a Rust compiler bridge, cloud execution, and AI providers without changing UI modules.
+The compiler, language adapters, simulator, debugger, and circuit model currently run locally in the renderer bundle. The `backend`, `simulator`, `ai`, and `extensions` directories contain concrete local implementations as well as contracts; hardware execution and cloud services are represented only by partial interfaces or extension points.
 
 ## Compiler pipeline
 
@@ -11,9 +11,10 @@ The `backend`, `simulator`, `ai`, and `extensions` folders expose contracts, not
 The state-vector simulator consumes `QuantumIR`, retaining a normalized complex amplitude vector and deriving probabilities, sampled measurements, registers, and Bloch vectors. `QuantumDebugger` replays deterministic IR prefixes to support stepping and historic state inspection.
 
 ```text
-Renderer (React / Monaco) → preload IPC → Electron main → workspace filesystem
-            ↓
-  compiler / simulator / AI / extension interfaces → concrete adapters
+Renderer (React / Monaco)
+  ├── compiler and language adapters → QuantumIR → circuit view
+  ├── QuantumIR → state-vector simulator → debugger/output panels
+  └── preload IPC → Electron main → filesystem, terminal, optional AI
 ```
 
 ## Dependency rules

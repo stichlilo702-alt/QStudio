@@ -147,11 +147,14 @@ The test suite currently covers:
 Run the main checks with:
 
 ```bash
+pnpm lint
 pnpm exec tsc -p tsconfig.json --noEmit
 pnpm exec tsc -p tsconfig.app.json --noEmit
 pnpm test
 pnpm build
 ```
+
+The optional Electron smoke test is run with `pnpm test:e2e` and requires an environment where Electron can launch a desktop window.
 
 ## Current Limitations
 
@@ -174,7 +177,7 @@ Hardware execution interfaces, the project indexer, extension host, settings ser
 The repository is building toward a more complete quantum IDE. High-value next steps include:
 
 - More expressive Quantum IR with register identity, classical data, dependencies, and stronger source mapping
-- Correct measurement and classical-result semantics
+- Broader classical-result and control-flow semantics in the shared IR
 - Broader and more rigorous language-subset coverage
 - Shared compiler services that can move out of the renderer when needed
 - Integrated project indexing, save workflows, settings, and extension lifecycle support

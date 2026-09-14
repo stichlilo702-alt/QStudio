@@ -3,10 +3,6 @@ import {
   createDefaultLanguageRegistry,
   LanguageRegistry,
   SilqLanguageAdapter,
-  OpenQasm3LanguageAdapter,
-  QSharpLanguageAdapter,
-  QuilLanguageAdapter,
-  OpenQasm2LanguageAdapter,
 } from "../../backend/src/languages";
 
 describe("LanguageRegistry", () => {
