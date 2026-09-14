@@ -10,6 +10,7 @@ QStudio provides a modular compiler architecture supporting 5 quantum languages:
 ## 1. Supported Quantum Languages
 
 ### A. Silq-inspired QStudio language
+
 - **Extensions**: `.silq`
 - **Supported Subset**:
   - Function declarations: `fn name() { ... }`
@@ -22,6 +23,7 @@ QStudio provides a modular compiler architecture supporting 5 quantum languages:
   - Line comments: `// ...`
 
 ### B. OpenQASM 3.0
+
 - **Extensions**: `.qasm`, `.qasm3`
 - **Supported Subset**:
   - Header: `OPENQASM 3.0;` or `OPENQASM 3;`
@@ -35,6 +37,7 @@ QStudio provides a modular compiler architecture supporting 5 quantum languages:
 - **Unsupported Features**: Arbitrary classical branching, subroutines, arbitrary angles/phases outside standard gates.
 
 ### C. Microsoft Q#
+
 - **Extensions**: `.qs`
 - **Supported Subset**:
   - Namespace & Open declarations: `namespace N { open Microsoft.Quantum.Intrinsic; ... }`
@@ -48,6 +51,7 @@ QStudio provides a modular compiler architecture supporting 5 quantum languages:
 - **Unsupported Features**: Advanced types, functors (`Adjoint`/`Controlled` on custom ops), loops, Q# project references.
 
 ### D. Quil (Rigetti)
+
 - **Extensions**: `.quil`
 - **Supported Subset**:
   - Declarations: `DECLARE ro BIT[N]`, `DECLARE memory REAL[N]`
@@ -57,6 +61,7 @@ QStudio provides a modular compiler architecture supporting 5 quantum languages:
 - **Unsupported Features**: Defgate expressions, classical logic gates (`AND`, `OR`), memory deflection modifiers.
 
 ### E. OpenQASM 2.0
+
 - **Extensions**: `.qasm`, `.qasm2`
 - **Supported Subset**:
   - Header: `OPENQASM 2.0;`
@@ -74,6 +79,7 @@ QStudio provides a modular compiler architecture supporting 5 quantum languages:
 ## 2. Compilation Pipeline & Common Quantum IR
 
 Every language adapter produces a unified `CompilationResult`:
+
 1. **Lexer / Tokenizer**: Creates tokens with accurate 1-indexed lines and columns.
 2. **Parser**: Generates a typed AST (`ProgramNode`).
 3. **Semantic Analyzer**: Validates register sizes, simulator-compatible qubit limits (1–12 qubits), symbol references, and index bounds.

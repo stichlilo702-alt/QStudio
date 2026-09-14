@@ -5,6 +5,7 @@
 QStudio is a quantum development environment architected with a modular, unidirectional compilation and simulation pipeline. Its primary language is a Silq-inspired QStudio language; additional adapters lower documented subsets of OpenQASM 3, OpenQASM 2, Microsoft Q#, and Quil into the same local tooling pipeline.
 
 ### Current Pipeline Overview
+
 1. **Source Code**: User enters quantum source code in the Monaco Editor.
 2. **Compiler Boundary (`SilqCompiler`)**:
    - **Lexer**: Produces typed `Token[]` stream with precise character offsets and line/column numbers.
@@ -73,19 +74,20 @@ To support OpenQASM 3, Microsoft Q#, Quil, and OpenQASM 2.0 without rewriting th
 
 ## 3. Supported Languages & Documented Subsets
 
-| Language | Extensions | Monaco ID | Header / Declarations | Supported Gate Set & Operations |
-| :--- | :--- | :--- | :--- | :--- |
-| **Silq-inspired QStudio language** | `.silq` | `silq` | `fn main() { let q = new Qubit[n]; }` | `H`, `X`, `Y`, `Z`, `S`, `T`, `CNOT`, `CZ`, `SWAP`, `measure`, `reset`, `.controlled(q)` |
-| **OpenQASM 3** | `.qasm`, `.qasm3` | `openqasm3` | `OPENQASM 3.0;`, `qubit[n] q;`, `bit[n] c;` | `h`, `x`, `y`, `z`, `s`, `t`, `cx`, `cnot`, `cz`, `swap`, `measure`, `reset` |
-| **Microsoft Q#** | `.qs` | `qsharp` | `namespace N { operation O() : R { use q = Qubit[n]; } }` | `H`, `X`, `Y`, `Z`, `S`, `T`, `CNOT`, `CZ`, `SWAP`, `M`, `Reset`, `ResetAll`, `let r = M(q)` |
-| **Quil** | `.quil` | `quil` | `DECLARE ro BIT[n]` | `H`, `X`, `Y`, `Z`, `S`, `T`, `CNOT`, `CZ`, `SWAP`, `MEASURE`, `RESET` |
-| **OpenQASM 2.0** | `.qasm`, `.qasm2` | `openqasm2` | `OPENQASM 2.0;`, `qreg q[n];`, `creg c[n];` | `h`, `x`, `y`, `z`, `s`, `t`, `cx`, `cz`, `swap`, `measure`, `reset`, `barrier` |
+| Language                           | Extensions        | Monaco ID   | Header / Declarations                                     | Supported Gate Set & Operations                                                              |
+| :--------------------------------- | :---------------- | :---------- | :-------------------------------------------------------- | :------------------------------------------------------------------------------------------- |
+| **Silq-inspired QStudio language** | `.silq`           | `silq`      | `fn main() { let q = new Qubit[n]; }`                     | `H`, `X`, `Y`, `Z`, `S`, `T`, `CNOT`, `CZ`, `SWAP`, `measure`, `reset`, `.controlled(q)`     |
+| **OpenQASM 3**                     | `.qasm`, `.qasm3` | `openqasm3` | `OPENQASM 3.0;`, `qubit[n] q;`, `bit[n] c;`               | `h`, `x`, `y`, `z`, `s`, `t`, `cx`, `cnot`, `cz`, `swap`, `measure`, `reset`                 |
+| **Microsoft Q#**                   | `.qs`             | `qsharp`    | `namespace N { operation O() : R { use q = Qubit[n]; } }` | `H`, `X`, `Y`, `Z`, `S`, `T`, `CNOT`, `CZ`, `SWAP`, `M`, `Reset`, `ResetAll`, `let r = M(q)` |
+| **Quil**                           | `.quil`           | `quil`      | `DECLARE ro BIT[n]`                                       | `H`, `X`, `Y`, `Z`, `S`, `T`, `CNOT`, `CZ`, `SWAP`, `MEASURE`, `RESET`                       |
+| **OpenQASM 2.0**                   | `.qasm`, `.qasm2` | `openqasm2` | `OPENQASM 2.0;`, `qreg q[n];`, `creg c[n];`               | `h`, `x`, `y`, `z`, `s`, `t`, `cx`, `cz`, `swap`, `measure`, `reset`, `barrier`              |
 
 ---
 
 ## 4. How to Add a New Quantum Language
 
 To add another quantum language in the future:
+
 1. Create parser in `backend/src/languages/<language-name>/`:
    - Implement tokenizer and parser emitting typed AST nodes.
    - Implement semantic checks and lowering to standard `QuantumIR`.

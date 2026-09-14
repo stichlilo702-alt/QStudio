@@ -3,6 +3,7 @@
 ## `QuantumLanguageAdapter`
 
 Interface defining a pluggable quantum language compiler/adapter:
+
 - `id`: Unique language identifier (`"silq"`, `"openqasm3"`, `"qsharp"`, `"quil"`, `"openqasm2"`).
 - `name`: User-facing display title.
 - `extensions`: Associated file extension list (`[".silq"]`, `[".qasm", ".qasm3"]`, `[".qs"]`, `[".quil"]`, `[".qasm", ".qasm2"]`).
@@ -16,6 +17,7 @@ Interface defining a pluggable quantum language compiler/adapter:
 ## `LanguageRegistry`
 
 Central registry for quantum language adapters:
+
 - `register(adapter)`: Registers an adapter, preventing duplicates.
 - `get(id)`: Retrieves an adapter by language ID.
 - `list()`: Lists all registered quantum language adapters.
@@ -29,7 +31,9 @@ Central registry for quantum language adapters:
 
 ## `QuantumSimulator` & `StateVectorSimulator`
 
-`compile(source, languageId?)`, `run(source, shots, languageId?)`, `runIR(ir, shots)`, `measure(qubit)`, and `stop()` abstract simulators. `StateVectorSimulator` executes exact state-vector simulation over 1–12 qubits for all registered quantum languages.
+`compile(source, languageId?)`, `run(source, shots, languageId?)`, `runIR(ir, shots)`, `measure(qubit)`, and `stop()` abstract simulators. `StateVectorSimulator` executes exact small-circuit state-vector simulation over 1–12 qubits for all registered quantum languages. `StateVectorResult` includes the single inspection run's probabilities, state vector, registers, and ordered measurement results, while `counts` aggregates independent shots.
+
+Measurement uses computational-basis projective collapse and reset returns a qubit to $|0\rangle$. The shared IR does not yet model classical-register destinations or classical control flow, and no hardware backend is implemented.
 
 ## `QuantumDebugger`
 

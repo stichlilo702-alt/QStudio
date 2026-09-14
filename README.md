@@ -206,6 +206,8 @@ Useful starting points:
 - [API Guide](docs/API.md)
 - [Developer Guide](docs/DeveloperGuide.md)
 - [Extension Guide](docs/ExtensionGuide.md)
+- [Contributing](CONTRIBUTING.md)
+- [Changelog](CHANGELOG.md)
 
 ## License
 

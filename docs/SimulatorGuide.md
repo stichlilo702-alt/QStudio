@@ -7,11 +7,13 @@
 Because all language adapters (Silq, OpenQASM 3, Q#, Quil, OpenQASM 2.0) compile into the unified `QuantumIR`, a single high-performance simulation engine is shared across all languages.
 
 ### Supported Operations
+
 - **Single-qubit gates**: Hadamard (`H`), Pauli-X (`X`), Pauli-Y (`Y`), Pauli-Z (`Z`), `S` (π/2 phase), `T` (π/4 phase).
 - **Two-qubit gates**: `CNOT` / `CX`, `CZ`, `SWAP`.
 - **Quantum measurement & reset**: Z-basis projection with state vector collapse (`measure`), reset to ground state |0⟩ (`reset`).
 
 ### Simulation Outputs
+
 - **Probability Distribution**: Exact state probabilities calculated from complex amplitude norms $|a_i|^2 + |b_i|^2$.
 - **State Vector**: Formatted complex amplitude representation per basis state (e.g. `0.707 + 0.000i |00⟩`).
 - **Measurement Sampling**: Projective measurement samples an outcome, collapses and renormalizes the state, and records the measured qubit/result for the inspection run. User-selected shots (100, 512, 1024, 2048, 4096) execute independently and aggregate final computational-state counts.
@@ -20,6 +22,7 @@ Because all language adapters (Silq, OpenQASM 3, Q#, Quil, OpenQASM 2.0) compile
 Measurement and reset are local state-vector operations: measurement uses the computational basis and reset projects a qubit to $|0\rangle$. The returned inspection state is separate from repeated-shot statistics. The simulator has no physical hardware backend, and the shared IR does not yet represent classical-register destinations or classical control flow.
 
 ### Multi-Language Invocation
+
 ```ts
 import { StateVectorSimulator } from "./simulator/StateVectorSimulator";
 
